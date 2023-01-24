@@ -1,4 +1,4 @@
-# Oxygen Validation Script
+# Oxygen Comparison Script Action
 
 This action triggers Oxygen Scripting to perform a comparison between two branches on your repository. All you have to do is to include this action in your workflow and choose the branches to compare. Find more info about workflows on https://docs.github.com/en/actions/using-workflows.
 
@@ -16,53 +16,9 @@ env:
 If you don't already have a workflow defined in your repository, you can use one of the samples below.
 
 This workflow requires manual trigger from the 'Actions' tab:
-```yaml
-name: Run Comparison (manually)
-on:
-  workflow_dispatch:
-    inputs:
-      validationDir:
-        description: 'The directory to be validated.'
-        required: true
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Oxygen Validation Script
-        uses: oxygenxml/oxygen-scripting-validation-action@v1.0.0
-        env:
-          SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
-        with:
-          validationDir: ${{ github.event.inputs.validationDir }}
-```
-This workflow automatically starts when a commit is pushed to the <i>main</i> branch, but can also be triggered manually:
-```yaml
-name: Run Comparison (automatically)
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Oxygen Comparison Script
-        uses: oxygenxml/oxygen-scripting-comparison-action@v1.0.0
-        env:
-          SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
-        with:
-          validationDir: 'validation' # Here you specify the directory to be validated.
-```
-
-You can also check [Oxygen Scripting - Validation template](https://github.com/oxygenxml/oxygen-script-validation-template) for sample validation files.
 
 # Deployment to GitHub Pages
 
-After a successful run of the Validation Script, a "validationReport.html" file is created on the <i>gh-pages</i> branch. If you want this report to be published to GitHub Pages, all you have to do is go to Settings &rarr; Pages, and under <i>Build and deployment</i> section select the <i>gh-pages</i> branch instead of the <i>main</i> branch. 
-The deployment workflow should automatically start and the report should be available shortly at: https://{userid}.github.io/{reponame}/validationReport.html.
+After a successful run of the Comparison Script, a "comparisonReport.html" file is created on the <i>gh-pages</i> branch. If you want this report to be published to GitHub Pages, all you have to do is go to Settings &rarr; Pages, and under <i>Build and deployment</i> section select the <i>gh-pages</i> branch instead of the <i>main</i> branch. 
+The deployment workflow should automatically start and the report should be available shortly at: https://{userid}.github.io/{reponame}/comparisonReport.html.
 
