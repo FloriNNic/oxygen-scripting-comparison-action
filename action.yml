@@ -4,11 +4,11 @@ branding:
   icon: 'git-branch'
   color: 'blue'
 inputs:
-  firstBranchName:
+  firstBranch:
     description: 'First branch name.'
     default: 'main'
     required: true
-  secondBranchName:
+  secondBranch:
     description: 'Second branch name.'
     default: 'main'
     required: true
@@ -20,6 +20,7 @@ runs:
       uses: actions/checkout@v3.3.0
       with:
         fetch-depth: 0
+
     - name: Checkout Comparison Template repo.
       uses: actions/checkout@v3.3.0
       with:
@@ -29,14 +30,14 @@ runs:
     - name: Checkout first branch.
       uses: actions/checkout@v3.3.0
       with:
-        ref: ${{ inputs.firstBranchName }}
-        path: ${{ inputs.firstBranchName }}
+        ref: ${{ inputs.firstBranch }}
+        path: ${{ inputs.firstBranch }}
 
     - name: Checkout second branch.
       uses: actions/checkout@v3.3.0
       with:
-        ref: ${{ inputs.secondBranchName }}
-        path: ${{ inputs.secondBranchName }}
+        ref: ${{ inputs.secondBranch }}
+        path: ${{ inputs.secondBranch }}
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
@@ -47,7 +48,7 @@ runs:
 
     - name: Build with Gradle
       run: |
-        cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranchName }} -PsecondBranch=${{ inputs.secondBranchName }} --info --stacktrace --build-cache
+        cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranch }} -PsecondBranch=${{ inputs.secondBranch }} -PinnerBuild=false --info --stacktrace --build-cache
       shell: bash
 
     - name: Deploy
