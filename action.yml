@@ -43,12 +43,13 @@ runs:
 
     - name: Make gradlew executable
       run: chmod +x ./scripting/build/gradlew
+      shell: bash
 
     - name: Build with Gradle
-      env:
-        SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
       run: |
         cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranchName }} -PsecondBranch=${{ inputs.secondBranchName }} --info --stacktrace --build-cache
+      shell: bash
+
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
