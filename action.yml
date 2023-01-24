@@ -1,44 +1,56 @@
-name: Oxygen Validation
-description: Validate your files using Oxygen Scripting
+name: Oxygen Comparison Action
+description: Compare your branches using Oxygen Scripting
 branding:
-  icon: 'check-square'
+  icon: 'git-branch'
   color: 'blue'
 inputs:
-  validationDir:
-    description: The name of directory containing the files to be validated.
+  firstBranchName:
+    description: 'First branch name.'
+    default: 'main'
     required: true
-    default: validation
+  secondBranchName:
+    description: 'Second branch name.'
+    default: 'main'
+    required: true
+
 runs:
   using: "composite"
   steps:
-    - name: Checkout current repo.
-      uses: actions/checkout@v3
-    - name: Checkout Oxygen Scripting Template repo.
-      uses: actions/checkout@v3
+    - name: Checkout main repo with entire history.
+      uses: actions/checkout@v3.3.0
       with:
-        repository: oxygenxml/oxygen-script-validation-template
+        fetch-depth: 0
+    - name: Checkout Comparison Template repo.
+      uses: actions/checkout@v3.3.0
+      with:
+        repository: FloriNNic/comparison-template
         path: scripting
 
-    # Validate wrapper
-    - name: Gradle Wrapper Validation
-      uses: gradle/wrapper-validation-action@v1.0.4
-
-    # Setup Java 11 environment for the next steps
-    - name: Setup Java
-      uses: actions/setup-java@v3
+    - name: Checkout first branch.
+      uses: actions/checkout@v3.3.0
       with:
-        distribution: zulu
-        java-version: 11
+        ref: ${{ inputs.firstBranchName }}
+        path: ${{ inputs.firstBranchName }}
+
+    - name: Checkout second branch.
+      uses: actions/checkout@v3.3.0
+      with:
+        ref: ${{ inputs.secondBranchName }}
+        path: ${{ inputs.secondBranchName }}
+
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
 
     - name: Make gradlew executable
       run: chmod +x ./scripting/build/gradlew
-      shell: bash
 
     - name: Build with Gradle
-      run: cd scripting/build; ./gradlew runValidation -PvalidationDir=${{ inputs.validationDir }} -PlocalBuild=false --info --stacktrace
-      shell: bash
-
+      env:
+        SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
+      run: |
+        cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranchName }} -PsecondBranch=${{ inputs.secondBranchName }} --info --stacktrace --build-cache
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
-        folder: scripting/report # The folder the action should deploy.
+        folder: scripting/report
+

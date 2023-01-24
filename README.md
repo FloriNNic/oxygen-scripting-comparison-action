@@ -1,6 +1,6 @@
 # Oxygen Validation Script
 
-This action triggers Oxygen Scripting to perform a validation on your repository files. All you have to do is to include this action in your workflow and choose the directory to be validated. Find more info about workflows on https://docs.github.com/en/actions/using-workflows.
+This action triggers Oxygen Scripting to perform a comparison between two branches on your repository. All you have to do is to include this action in your workflow and choose the branches to compare. Find more info about workflows on https://docs.github.com/en/actions/using-workflows.
 
 # Requirements
 
@@ -17,7 +17,7 @@ If you don't already have a workflow defined in your repository, you can use one
 
 This workflow requires manual trigger from the 'Actions' tab:
 ```yaml
-name: Run Validation (manually)
+name: Run Comparison (manually)
 on:
   workflow_dispatch:
     inputs:
@@ -37,7 +37,7 @@ jobs:
 ```
 This workflow automatically starts when a commit is pushed to the <i>main</i> branch, but can also be triggered manually:
 ```yaml
-name: Run Validation (automatically)
+name: Run Comparison (automatically)
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
@@ -51,8 +51,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Oxygen Validation Script
-        uses: oxygenxml/oxygen-scripting-validation-action@v1.0.0
+      - name: Oxygen Comparison Script
+        uses: oxygenxml/oxygen-scripting-comparison-action@v1.0.0
         env:
           SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
         with:
