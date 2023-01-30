@@ -15,8 +15,27 @@ env:
 
 If you don't already have a workflow defined in your repository, you can use one of the samples below.
 
-This workflow requires manual trigger from the 'Actions' tab:
+This workflow triggers the comparison when a pull request is opened on main branch.
+```yaml
+name: Run Comparison Script
+on:
+  pull_request_target:
+    branches: [ "master" ]
+    types: [opened]
+  
+jobs:     
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comparison Action
+        uses: FloriNNic/oxygen-scripting-comparison-action@v1.0.3
+        env:
+          SCRIPTING_LICENSE_KEY: ${{secrets.SCRIPTING_LICENSE_KEY}}
+        with:
+          firstBranch: master
+          secondBranch: ${{ github.event.pull_request.head.sha }}
 
+```
 # Deployment to GitHub Pages
 
 After a successful run of the Comparison Script, a "comparisonReport.html" file is created on the <i>gh-pages</i> branch. If you want this report to be published to GitHub Pages, all you have to do is go to Settings &rarr; Pages, and under <i>Build and deployment</i> section select the <i>gh-pages</i> branch instead of the <i>main</i> branch. 

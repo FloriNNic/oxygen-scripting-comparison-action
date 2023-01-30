@@ -1,5 +1,5 @@
 name: Comparison Action
-description: Compare your branches using Oxygen Scripting
+description: Compare your branches/PRs using Oxygen Scripting
 branding:
   icon: 'git-branch'
   color: 'blue'
@@ -46,13 +46,8 @@ runs:
       run: chmod +x ./scripting/build/gradlew
       shell: bash
 
-    - name: List directories
-      run: ls
-      shell: bash
-
     - name: Build with Gradle
-      run: |
-        cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranch }} -PsecondBranch=${{ inputs.secondBranch }} -PinnerBuild=false --info --stacktrace --build-cache
+      run: cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranch }} -PsecondBranch=${{ inputs.secondBranch }} -PinnerBuild=false --info --stacktrace --build-cache
       shell: bash
 
     - name: Deploy
