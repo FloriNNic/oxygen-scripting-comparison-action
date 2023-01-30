@@ -5,11 +5,11 @@ branding:
   color: 'blue'
 inputs:
   firstBranch:
-    description: 'First branch name.'
+    description: 'First branch name / commit SHA'
     default: 'main'
     required: true
   secondBranch:
-    description: 'Second branch name.'
+    description: 'Second branch name / commit SHA'
     default: 'main'
     required: true
 
@@ -44,6 +44,10 @@ runs:
 
     - name: Make gradlew executable
       run: chmod +x ./scripting/build/gradlew
+      shell: bash
+
+    - name: List directories
+      run: ls
       shell: bash
 
     - name: Build with Gradle
