@@ -1,43 +1,24 @@
-name: Comparison Action
-description: Compare your branches/PRs using Oxygen Scripting
+name: Generate Documentation
+description: Document your schemas using Oxygen Scripting
 branding:
-  icon: 'git-branch'
+  icon: 'book-open'
   color: 'blue'
 inputs:
-  firstBranch:
-    description: 'First branch name / commit SHA'
-    default: 'main'
-    required: true
-  secondBranch:
-    description: 'Second branch name / commit SHA'
-    default: 'main'
+  schemaFile:
+    description: 'Schema file to generate documentation for.'
     required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Checkout main repo with entire history.
+    - name: Checkout main repo.
       uses: actions/checkout@v3.3.0
-      with:
-        fetch-depth: 0
 
-    - name: Checkout Comparison Template repo.
+    - name: Checkout Documentation Template repo.
       uses: actions/checkout@v3.3.0
       with:
         repository: FloriNNic/comparison-template
         path: scripting
-
-    - name: Checkout first branch.
-      uses: actions/checkout@v3.3.0
-      with:
-        ref: ${{ inputs.firstBranch }}
-        path: ${{ inputs.firstBranch }}
-
-    - name: Checkout second branch.
-      uses: actions/checkout@v3.3.0
-      with:
-        ref: ${{ inputs.secondBranch }}
-        path: ${{ inputs.secondBranch }}
 
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
@@ -47,11 +28,11 @@ runs:
       shell: bash
 
     - name: Build with Gradle
-      run: cd scripting/build; ./gradlew runComparison -PfirstBranch=${{ inputs.firstBranch }} -PsecondBranch=${{ inputs.secondBranch }} -PinnerBuild=false --info --stacktrace --build-cache
+      run: cd scripting/build; ./gradlew generateDoc -PschemaFile=${{ inputs.schemaFile }} -PinnerBuild=false --info --stacktrace --build-cache
       shell: bash
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4.4.1
       with:
-        folder: scripting/report
+        folder: scripting/doc
 
